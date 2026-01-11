@@ -3,7 +3,7 @@ package util;
 import java.sql.*;
 
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/OnlineElectionSystem";
+    private static final String URL = "jdbc:mysql://localhost:3306/online_election_system";
     private static final String USER = "root";
     private static final String PASS = "";
 
