@@ -124,7 +124,7 @@ body {
         <p>View and participate in ongoing elections on campus.</p>
     </a>
 
-    <a href="homepage.jsp" class="card">
+    <a href="results.jsp" class="card">
         <h3>Election Results</h3>
         <p>View active and past election outcomes.</p>
     </a>

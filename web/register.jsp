@@ -29,7 +29,7 @@
     }
 
     .container { 
-        width: 380px;
+        width: 500px;
         background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(6px);
         padding: 18px;
@@ -62,7 +62,7 @@
     }
 
     input {
-        width: 100%; 
+        width: 95%; 
         padding: 8px;
         margin-top: 4px;
         border-radius: 8px; 

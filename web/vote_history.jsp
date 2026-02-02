@@ -1,12 +1,7 @@
-<%-- 
-    Document   : vote_history
-    Created on : Jan 14, 2026, 1:21:48?PM
-    Author     : alyshaazfairul
---%>
 
 <%@ page import="java.sql.*, com.mvc.util.DBConnection, com.mvc.model.User" %>
 <%
-    // ? Session & role check
+    // Session & role check
     User user = (User) session.getAttribute("user");
     if (user == null || !"voter".equals(user.getRole())) {
         response.sendRedirect("login.jsp");
@@ -26,10 +21,48 @@
         padding: 0;
         font-family: "Segoe UI", Arial, sans-serif;
         background: #eef2f7;
+    }
+
+    /* ===== Layout ===== */
+    .layout {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         min-height: 100vh;
+    }
+
+    /* ===== Sidebar (MATCHED) ===== */
+    .sidebar {
+        width: 230px;
+        background: #1f3c88;
+        color: white;
+        padding-top: 10px;   /* SAME */
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 20px;
+        letter-spacing: 1px;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 14px 25px;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #4a80ff;
+    }
+
+    /* ===== Main Content ===== */
+    .main-content {
+        flex: 1;
+        background: #eef2f7;
     }
 
     .header-banner {
@@ -51,15 +84,11 @@
         box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         max-width: 700px;
         width: 90%;
-        margin-top: 30px;
+        margin: 40px auto;
         text-align: center;
     }
 
-    h2 {
-        color: #305fbf;
-        margin-bottom: 25px;
-        font-size: 22px;
-    }
+    
 
     table {
         width: 100%;
@@ -107,75 +136,91 @@
 
 <body>
 
-<div class="header-banner">Online Student Election System</div>
+<div class="layout">
 
-<div class="container">
-    <h2>Your Voting History</h2>
+    <!-- ===== Sidebar ===== -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="voter_dashboard.jsp">Home</a>
+        <a href="active_elections.jsp">Active Elections</a>
+        <a href="vote_history.jsp" class="active">Vote History</a>
+    </div>
 
-    <table>
-        <tr>
-            <th>Election</th>
-            <th>Voted For</th>
-            <th>Date</th>
-        </tr>
+    <!-- ===== Main Content ===== -->
+    <div class="main-content">
 
-        <%
-            Connection con = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            boolean hasData = false;
+        <div class="header-banner">Online Student Election System</div>
 
-            try {
-                con = DBConnection.getConnection();
-                ps = con.prepareStatement(
-                    "SELECT e.title AS election_title, c.name AS candidate_name, v.vote_time " +
-                    "FROM votes v " +
-                    "JOIN candidates c ON v.candidate_id = c.candidate_id " +
-                    "JOIN elections e ON c.election_id = e.election_id " +
-                    "WHERE v.user_id = ? " +
-                    "ORDER BY v.vote_time DESC"
-                );
-                ps.setInt(1, user.getUserId());
-                rs = ps.executeQuery();
+        <div class="container">
+            <h2>Your Voting History</h2>
 
-                while (rs.next()) {
-                    hasData = true;
-        %>
-            <tr>
-                <td><%= rs.getString("election_title") %></td>
-                <td><%= rs.getString("candidate_name") %></td>
-                <td><%= rs.getTimestamp("vote_time") %></td>
-            </tr>
-        <%
-                }
+            <table>
+                <tr>
+                    <th>Election</th>
+                    <th>Voted For</th>
+                    <th>Date</th>
+                </tr>
 
-                if (!hasData) {
-        %>
-            <tr>
-                <td colspan="3" style="text-align:center;color:#777;">
-                    No voting history found.
-                </td>
-            </tr>
-        <%
-                }
-            } catch (Exception e) {
-        %>
-            <tr>
-                <td colspan="3" style="color:red;text-align:center;">
-                    <%= e.getMessage() %>
-                </td>
-            </tr>
-        <%
-            } finally {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            }
-        %>
+                <%
+                    Connection con = null;
+                    PreparedStatement ps = null;
+                    ResultSet rs = null;
+                    boolean hasData = false;
 
-    </table>
+                    try {
+                        con = DBConnection.getConnection();
+                        ps = con.prepareStatement(
+                            "SELECT e.title AS election_title, c.name AS candidate_name, v.vote_time " +
+                            "FROM votes v " +
+                            "JOIN candidates c ON v.candidate_id = c.candidate_id " +
+                            "JOIN elections e ON c.election_id = e.election_id " +
+                            "WHERE v.user_id = ? " +
+                            "ORDER BY v.vote_time DESC"
+                        );
+                        ps.setInt(1, user.getUserId());
+                        rs = ps.executeQuery();
 
-    <a href="voter_dashboard.jsp" class="back-btn">Back to Dashboard</a>
+                        while (rs.next()) {
+                            hasData = true;
+                %>
+                <tr>
+                    <td><%= rs.getString("election_title") %></td>
+                    <td><%= rs.getString("candidate_name") %></td>
+                    <td><%= rs.getTimestamp("vote_time") %></td>
+                </tr>
+                <%
+                        }
+
+                        if (!hasData) {
+                %>
+                <tr>
+                    <td colspan="3" style="text-align:center;color:#777;">
+                        No voting history found.
+                    </td>
+                </tr>
+                <%
+                        }
+                    } catch (Exception e) {
+                %>
+                <tr>
+                    <td colspan="3" style="color:red;text-align:center;">
+                        <%= e.getMessage() %>
+                    </td>
+                </tr>
+                <%
+                    } finally {
+                        if (rs != null) rs.close();
+                        if (ps != null) ps.close();
+                        if (con != null) con.close();
+                    }
+                %>
+
+            </table>
+
+            <a href="voter_dashboard.jsp" class="back-btn">Back to Dashboard</a>
+        </div>
+
+    </div>
 </div>
 
 </body>

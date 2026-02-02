@@ -13,6 +13,48 @@
         background: #eef2f7;
     }
 
+    /* ===== Layout ===== */
+    .layout {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+        width: 230px;
+        background: #1f3c88;
+        color: white;
+        padding-top: 10px;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 20px;
+        letter-spacing: 1px;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 14px 25px;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #4a80ff;
+    }
+
+    /* ===== Main Content ===== */
+    .main-content {
+        flex: 1;
+        background: #eef2f7;
+    }
+
     .header-banner {
         background: linear-gradient(to right, #305fbf, #4a80ff);
         color: white;
@@ -78,9 +120,11 @@
     }
 
     .back-btn {
-        display: inline-block;
-        margin-top: 30px;
-        padding: 12px 22px;
+        display: block;
+        width: 180px;
+        text-align: center;
+        margin: 40px auto 0;
+        padding: 12px;
         background: #d9534f;
         color: white;
         border-radius: 6px;
@@ -97,68 +141,83 @@
 
 <body>
 
-<div class="header-banner">Online Student Election System</div>
+<div class="layout">
 
-<div class="container">
-
-    <div class="page-title">Active Elections</div>
-
-    <div class="elections">
-
-        <%
-            Connection con = null;
-            Statement st = null;
-            ResultSet rs = null;
-
-            try {
-                con = DBConnection.getConnection();
-                st = con.createStatement();
-                rs = st.executeQuery(
-                    "SELECT election_id, title, description FROM elections WHERE status='active'"
-                );
-
-                boolean hasData = false;
-
-                while (rs.next()) {
-                    hasData = true;
-        %>
-            <a href="vote.jsp?eid=<%= rs.getInt("election_id") %>" class="card">
-                <h3><%= rs.getString("title") %></h3>
-                <p>
-                    <%= rs.getString("description") != null 
-                        ? rs.getString("description") 
-                        : "Click to cast your vote in this election." %>
-                </p>
-            </a>
-        <%
-                }
-
-                if (!hasData) {
-        %>
-            <div class="card">
-                <h3>No Active Elections</h3>
-                <p>Please check back later.</p>
-            </div>
-        <%
-                }
-            } catch (Exception e) {
-        %>
-            <div class="card">
-                <h3>Error</h3>
-                <p><%= e.getMessage() %></p>
-            </div>
-        <%
-            } finally {
-                if (rs != null) rs.close();
-                if (st != null) st.close();
-                if (con != null) con.close();
-            }
-        %>
-
+    <!-- ===== Sidebar ===== -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="voter_dashboard.jsp">Home</a>
+        <a href="active_elections.jsp" class="active">Active Elections</a>
+        <a href="vote_history.jsp">Vote History</a>
     </div>
 
-    <a href="voter_dashboard.jsp" class="back-btn">Back to Dashboard</a>
+    <!-- ===== Main Content ===== -->
+    <div class="main-content">
 
+        <div class="header-banner">Online Student Election System</div>
+
+        <div class="container">
+
+            <div class="page-title">Active Elections</div>
+
+            <div class="elections">
+
+                <%
+                    Connection con = null;
+                    Statement st = null;
+                    ResultSet rs = null;
+
+                    try {
+                        con = DBConnection.getConnection();
+                        st = con.createStatement();
+                        rs = st.executeQuery(
+                            "SELECT election_id, title, description FROM elections WHERE status='active'"
+                        );
+
+                        boolean hasData = false;
+
+                        while (rs.next()) {
+                            hasData = true;
+                %>
+                    <a href="vote.jsp?eid=<%= rs.getInt("election_id") %>" class="card">
+                        <h3><%= rs.getString("title") %></h3>
+                        <p>
+                            <%= rs.getString("description") != null 
+                                ? rs.getString("description") 
+                                : "Click to cast your vote in this election." %>
+                        </p>
+                    </a>
+                <%
+                        }
+
+                        if (!hasData) {
+                %>
+                    <div class="card">
+                        <h3>No Active Elections</h3>
+                        <p>Please check back later.</p>
+                    </div>
+                <%
+                        }
+                    } catch (Exception e) {
+                %>
+                    <div class="card">
+                        <h3>Error</h3>
+                        <p><%= e.getMessage() %></p>
+                    </div>
+                <%
+                    } finally {
+                        if (rs != null) rs.close();
+                        if (st != null) st.close();
+                        if (con != null) con.close();
+                    }
+                %>
+
+            </div>
+
+           
+        </div>
+
+    </div>
 </div>
 
 </body>
