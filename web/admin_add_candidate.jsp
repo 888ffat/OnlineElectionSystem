@@ -75,7 +75,6 @@ body {
     border-left: 4px solid var(--secondary);
 }
 
-/* Main Content – CENTERED like Create Election */
 .main-content {
     flex: 1;
     display: flex;
